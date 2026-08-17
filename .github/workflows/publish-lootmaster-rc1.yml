@@ -1,0 +1,47 @@
+name: Publish Lootmaster RC1
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.publish/loot_part_03.txt'
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Rebuild exact RC1 script
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import base64, gzip, hashlib
+
+          parts = [
+              Path('.publish/loot_part_01.txt').read_text(),
+              Path('.publish/loot_part_02.txt').read_text(),
+              Path('.publish/loot_part_03.txt').read_text(),
+          ]
+          data = gzip.decompress(base64.b64decode(''.join(parts)))
+          expected_size = 104208
+          expected_sha256 = '634d838d985039242c432352a693002c8042cdc09fc2e0e5965c8832e33d8e04'
+          actual_sha256 = hashlib.sha256(data).hexdigest()
+          assert len(data) == expected_size, (len(data), expected_size)
+          assert actual_sha256 == expected_sha256, (actual_sha256, expected_sha256)
+          target = Path('Lootmaster-Reforged/JCS_Lootmaster_Reforged.py')
+          target.write_bytes(data)
+          PY
+
+      - name: Commit public script and remove transfer files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Lootmaster-Reforged/JCS_Lootmaster_Reforged.py
+          git rm -f .publish/loot_part_01.txt .publish/loot_part_02.txt .publish/loot_part_03.txt
+          git rm -f .github/workflows/publish-lootmaster-rc1.yml
+          git commit -m "Publish Lootmaster Reforged v1.5-RC1 script"
+          git push
