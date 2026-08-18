@@ -1,50 +1,53 @@
 # J.C.S. Ultimate Combat Bar
 
-**Version 1.6 RC13 — Public Test**  
+**Version 1.6 RC14 — Public Test**  
 For **TazUO Legion / LegionPy**
 
-The J.C.S. Ultimate Combat Bar combines combat ability automation, slayer weapon selection, automatic AOE switching, shield enforcement, target learning, durability monitoring, Enchanted Apple access, and Bag of Sending support into one compact combat gump.
+The J.C.S. Ultimate Combat Bar combines combat ability automation, Slayer weapon selection, automatic AOE switching, shield enforcement, target learning, durability monitoring, Enchanted Apple access, and Bag of Sending support into one compact combat gump.
 
 > This is a **TazUO Legion Python script**. It is not a Razor Enhanced script.
 
+## RC14 Compatibility Fix
+
+RC13 used a nested `API.Gumps.*` namespace that is not available on current public Legion builds. RC14 permanently converts the custom-gump calls to Legion's current top-level `API.*` functions.
+
+**RC14 is completely standalone. Only one Python file is required.**
+
+Use:
+
+`JCS_Ultimate_Combat_Bar_v1.6_RC14_Public_Test.py`
+
+Do not keep or run the superseded RC13 script.
+
 ## Public Test Notice
 
-This is an RC/public-test build. The normal sword/slayer/AOE portions are the primary tested features.
+This is still an RC/public-test build. The normal combat, Slayer, weapon-switching, and AOE portions are the primary tested features.
 
-**Shield Bash / Basher support is BETA.** It is intended for characters using Parry Mastery and still needs wider in-game testing on different builds and shard conditions.
+**Shield Bash / Basher support remains BETA.** It is intended for characters using Parry Mastery and still needs wider in-game testing on different builds and shard conditions.
 
 ## Main Features
 
-- Automatic target tracking and target classification
+- Automatic target tracking and classification
 - Automatic Slayer weapon switching
-- Automatic AOE weapon switching when surrounded
+- Automatic AOE switching when surrounded
 - Manual AOE override
 - General single-target and General AOE weapon profiles
-- Slayer profiles for:
-  - Arachnid
-  - Demon
-  - Dragon
-  - Elemental
-  - Poison Elemental
-  - Fey
-  - Repond
-  - Reptile
-  - Undead
-- Weapon assignments are remembered per character
+- Slayer profiles for Arachnid, Demon, Dragon, Elemental, Poison Elemental, Fey, Repond, Reptile, and Undead
+- Per-character weapon assignments
 - Learned monster names and body/graphic IDs
 - Doom-oriented target learning for creatures with unusual or changing names
 - Shield enforcement
 - Configurable combat abilities
 - Equipment durability warnings
-- Enchanted Apple counter and quick-use button
+- Enchanted Apple counter and quick-use
 - Bag of Sending charge display and gold sending
-- Persistent gump position
-- Compact/minimized combat bar
+- Persistent full/minimized gump positions
+- Compact minimized combat bar
 - Per-character persistent settings
 
 ## Supported Weapon Types
 
-The current build recognizes these weapon families when identifying assigned weapons:
+The current build recognizes:
 
 - Double Axe
 - Longsword
@@ -54,30 +57,28 @@ The current build recognizes these weapon families when identifying assigned wea
 - Composite Bow
 - Soul Glaive
 
-You do not need to manually choose a weapon button during combat. Assign the physical weapons to the appropriate profiles in **Setup**, and the bar handles switching.
+You do not manually choose a weapon during combat. Assign the physical weapons to profiles in **Setup**, and the bar handles switching.
 
 ## First-Time Setup
 
-1. Place `JCS_Ultimate_Combat_Bar_v1.6_RC13_Public_Test.py` in your Legion scripts folder.
-2. Run the script.
+1. Put `JCS_Ultimate_Combat_Bar_v1.6_RC14_Public_Test.py` in your Legion scripts folder.
+2. Run that single script.
 3. Click **Setup**.
 4. Click **Weapon Bag** and target the container holding your combat weapons.
-5. Click **Shield** and target the shield you want the bar to keep equipped.
-6. Assign your weapons under **Weapon Assignments**.
-7. Enable or disable the combat abilities you want under **Combat Options**.
-8. Optionally set your Bag of Sending and durability warning threshold.
+5. Click **Shield** and target the shield you want maintained.
+6. Assign weapons under **Weapon Assignments**.
+7. Enable or disable the abilities you want under **Combat Options**.
+8. Optionally configure your Bag of Sending and durability warning threshold.
 9. Close Setup and begin combat.
 
-Settings and assignments are stored per character through Legion persistent variables, so normal setup should only be required once per character.
+Settings and assignments are stored through Legion per-character persistent variables, so normal setup should only be required once per character.
 
 ## Weapon Assignments
 
-Each profile can have one specific weapon assigned to it.
+Each profile can have one weapon assigned:
 
-Available profiles are:
-
-- **Single Target** — your normal non-slayer single-target weapon
-- **General AOE** — your normal area-damage weapon
+- **Single Target** — normal non-Slayer single-target weapon
+- **General AOE** — normal area-damage weapon
 - **Arachnid**
 - **Demon**
 - **Dragon**
@@ -88,9 +89,7 @@ Available profiles are:
 - **Reptile**
 - **Undead**
 
-To assign a weapon, click its profile in Setup and target the desired weapon.
-
-A marked profile indicates that a weapon has already been assigned.
+Click a profile in Setup and target the desired weapon. A marked profile indicates a saved assignment.
 
 ## Automatic Slayer Selection
 
@@ -98,13 +97,13 @@ With **Slayer Auto** enabled, the bar examines the current enemy and determines 
 
 Classification can come from:
 
-1. A monster you manually taught the bar
+1. A manually taught monster
 2. A learned body/graphic ID
 3. Built-in known-monster mappings
 4. Monster-name keyword matching
 5. General Single Target fallback
 
-The selected profile appears on the main gump under **Detected** and the equipped profile appears under **Weapon**.
+The selected category appears under **Detected** and the weapon profile currently equipped appears under **Weapon**.
 
 ### Poison Elementals
 
@@ -112,55 +111,50 @@ Poison Elemental has its own profile and is checked separately from the broader 
 
 ## Teaching Unknown Monsters
 
-Some creatures—especially Doom bosses or shard-specific monsters—may not classify correctly by name alone.
-
-To teach one:
+Some creatures, especially Doom bosses or shard-specific monsters, may not classify correctly by name alone.
 
 1. Open **Setup**.
 2. Click **Target Mob** and target the creature.
 3. Under **Teach Target Slayer Type**, click the correct category.
-4. The bar remembers both the monster name and body/graphic when available.
+4. The bar remembers the monster name and body/graphic when available.
 
-Use **Forget Learned Target** to erase the learned classification for the currently targeted monster.
+Use **Forget Learned Target** to erase the learned classification for the current target.
 
-This is particularly useful for monsters with random names but consistent body IDs.
+This is especially useful for creatures with random names but consistent body IDs.
 
 ## Automatic AOE
 
 With **Auto AOE** enabled, the bar checks hostile creatures within **2 tiles**.
 
-Current RC13 behavior:
+RC14 behavior:
 
-- Enters automatic AOE mode at **3 or more** nearby hostiles
-- Leaves automatic AOE mode when the count drops to **1 or fewer**
-- Uses the **General AOE** assigned weapon while automatic AOE is active
+- Enters automatic AOE at **3 or more** nearby hostiles
+- Leaves automatic AOE when the count falls to **1 or fewer**
+- Uses the matching Slayer weapon if that assigned weapon is an AOE-capable Bladed Whip
+- Otherwise switches to the **General AOE** weapon
 - Returns to the appropriate Slayer or Single Target profile afterward
 
-The different enter/exit counts prevent rapid weapon swapping when the nearby enemy count fluctuates.
+The separate enter/exit thresholds reduce rapid weapon swapping when the nearby count fluctuates.
 
 ### Manual AOE
 
-Click **AOE** on the main bar to force General AOE mode.
-
-While manual AOE is active, it overrides normal automatic weapon selection. Click it again to return to automatic behavior.
+Click **AOE** on the main bar to force General AOE mode. Manual AOE overrides normal automatic weapon selection until switched off.
 
 ## Shield Enforcement
 
-Use **Setup → Shield** to target the shield you want the script to maintain.
+Use **Setup → Shield** to target the shield you want maintained.
 
-The main bar displays:
+The main bar shows:
 
-- **Equipped** — configured shield is currently equipped
-- **Missing** — configured shield is not currently equipped
-- **Not Set** — no shield has been configured
+- **Equipped** — configured shield is equipped
+- **Missing** — configured shield is not equipped
+- **Not Set** — no shield is configured
 
-The bar periodically checks the shield and attempts to restore it when appropriate.
+The bar periodically checks and attempts to restore the configured shield.
 
 ## Combat Options
 
-Each ability can be toggled ON or OFF independently in Setup.
-
-Available options:
+Each ability can be toggled independently:
 
 - **Enemy of One**
 - **Divine Fury**
@@ -173,28 +167,19 @@ Available options:
 - **Curse Weapon**
 - **Shield Bash BETA**
 
-The script manages timing internally rather than repeatedly firing every enabled ability without regard to its normal reuse behavior.
+The script manages its own reuse timing rather than blindly firing every enabled action continuously.
 
 ### Enemy of One
 
-Enemy of One is tracked by creature type rather than only by one monster serial. This prevents needless cancel/recast behavior when fighting several creatures of the same type.
+Enemy of One is tracked by creature type rather than only one monster serial. This reduces unnecessary cancel/recast behavior while fighting several creatures of the same type.
 
 ### Shield Bash / Basher
 
-**Shield Bash is currently BETA.** It is intended for Parry Mastery/Basher testing and should not yet be considered as mature as the normal Slayer and weapon-switching logic.
-
-If you are testing this portion, pay special attention to ability timing, mastery state, shield behavior, and whether normal combat actions remain responsive.
+**Shield Bash remains BETA.** It is intended for Parry Mastery/Basher testing and should not yet be considered as mature as the normal Slayer and weapon-switching logic.
 
 ## Target Button
 
-**Target** lets you manually choose the current enemy.
-
-This is useful when:
-
-- Automatic acquisition has not selected the creature you want
-- Teaching a monster
-- Testing a Slayer assignment
-- Fighting bosses or unusual shard-specific creatures
+**Target** manually selects the current enemy. It is useful for teaching monsters, testing Slayer assignments, bosses, and unusual shard-specific creatures.
 
 ## Durability Monitoring
 
@@ -202,22 +187,20 @@ The bar scans equipped gear and warns when durability falls below the configured
 
 In Setup:
 
-- **Warn -** lowers the warning threshold by 5%
-- The percentage button shows the current threshold
-- **Warn +** raises the threshold by 5%
-- **Check Now** immediately performs a durability scan
+- **Warn -** lowers the threshold by 5%
+- The percentage button displays the current threshold
+- **Warn +** raises it by 5%
+- **Check Now** performs an immediate durability scan
 
-The main gump shows **OK** or **LOW x#**.
-
-The minimized bar provides a compact durability control and, when supported by Legion, can display the graphic of the lowest-durability equipped item.
+The main gump displays **OK** or **LOW x#**.
 
 ## Enchanted Apples
 
 The bar automatically searches your backpack for Enchanted Apples.
 
-- The main bar displays **Apple [count]**
+- The main bar shows **Apple [count]**
 - Clicking it uses an apple
-- The minimized bar displays the apple graphic when Legion can render it, plus the current count
+- The minimized bar can display the apple graphic plus the current count
 
 No manual apple serial setup is required.
 
@@ -225,23 +208,21 @@ No manual apple serial setup is required.
 
 Use **Setup → Set Send Bag** and target your Bag of Sending.
 
-The script reads the bag's displayed properties to determine remaining charges when the shard exposes them in a recognizable format.
+The script attempts to read remaining charges from the bag's displayed item properties.
 
 - **Bank Gold** sends eligible backpack gold through the configured Bag of Sending
-- The charge count is shown beside the button when readable
-- A `?` means the bag is configured but the charge count could not be reliably read
-
-The script understands common property formats such as `Charges: 25`, `Charges 25`, or `25 Charges`.
+- The remaining charge count is displayed when readable
+- `?` means the bag is configured but the property text could not be reliably parsed
 
 ## Main Bar Buttons
 
-- **Pause / Resume** — pauses or resumes automated combat processing
-- **AOE / AOE ON** — toggles manual General AOE mode
-- **Target** — manually select the current enemy
-- **Bank Gold [charges]** — use the configured Bag of Sending on backpack gold
+- **Pause / Resume** — pause or resume automated combat processing
+- **AOE / AOE ON** — manual General AOE override
+- **Target** — manually select an enemy
+- **Bank Gold [charges]** — send backpack gold with the configured Bag of Sending
 - **Apple [count]** — use an Enchanted Apple
-- **Setup** — open configuration and learning controls
-- **Min** — switch to the compact combat bar
+- **Setup** — configuration and learning controls
+- **Min** — switch to compact mode
 - **Stop** — stop the script and clear active weapon abilities
 
 ## Main Status Display
@@ -249,101 +230,78 @@ The script understands common property formats such as `Charges: 25`, `Charges 2
 The full bar shows:
 
 - **Target** — current enemy name
-- **Detected** — Slayer/profile classification for that enemy
+- **Detected** — target Slayer/profile classification
 - Classification source
-- **Weapon** — profile currently being used
+- **Weapon** — currently active weapon profile
 - **Mode** — Manual AOE, Auto AOE, or Auto Slayer
-- **Near** — hostile count in the AOE detection radius
+- **Near** — hostile count in the AOE radius
 - **Shield** — configured shield state
 - **Body** — current enemy body/graphic ID
-- **Dura** — durability status and warning threshold
+- **Dura** — durability state and warning threshold
 - **ACTIVE / PAUSED** — script state
 
 ## Minimized Bar
 
-The compact bar is intended to preserve screen space during combat.
+Compact mode includes the script title, running/paused state, current mode/profile, durability check, Enchanted Apple information, Bag of Sending information, **Open**, and **Stop**.
 
-It includes:
-
-- Script title
-- RUNNING / PAUSED state
-- Current mode/profile
-- Durability quick check
-- Enchanted Apple graphic/count
-- Bag of Sending graphic/charges
-- **Open** to restore the full gump
-- **Stop** to stop the script
-
-The minimized and full gump positions are remembered independently.
+The full and minimized positions are remembered independently.
 
 ## Pause vs. Stop
 
-**Pause** temporarily suspends combat processing without closing the script. Resume when ready.
+**Pause** temporarily suspends combat processing while keeping the script open.
 
-**Stop** ends the script's run loop and clears active weapon abilities. Run the script again to reopen it.
+**Stop** ends the script and clears active weapon abilities. Run RC14 again to reopen it.
 
 ## Persistent Settings
 
-The bar stores configuration using Legion per-character persistent variables, including:
+Per-character persistent data includes:
 
 - Gump positions
 - Weapon bag
 - Shield
 - Bag of Sending
 - Durability threshold
-- Assigned Slayer weapons
+- Slayer weapon assignments
 - Assigned weapon types
 - Ability toggles
 - Slayer Auto / Auto AOE settings
 - Learned monster names
 - Learned monster graphics/body IDs
 
-Because the data is character-specific, different characters can maintain different combat setups.
-
 ## Known Limitations / Testing Notes
 
 - **Shield Bash / Basher support is BETA.**
-- Shard-specific spell, mastery, item-property, or journal behavior can differ.
+- Shard-specific spells, masteries, item properties, and journal behavior can differ.
 - Bag of Sending charge detection depends on the wording exposed in item properties.
-- Custom monsters may require manual teaching before Slayer switching can be accurate.
+- Custom monsters may require manual teaching.
 - The script can only equip and use items/actions that the client and shard permit at that moment.
 
 ## Troubleshooting
 
-### Wrong Slayer weapon is selected
+### `AttributeError: 'API' object has no attribute 'Gumps'`
 
-Target the creature manually, confirm the **Detected** profile, then teach it the proper Slayer type from Setup if necessary.
+That was the RC13 compatibility problem. Delete RC13 and use the standalone RC14 file. RC14 uses the current top-level Legion gump API.
+
+### Wrong Slayer weapon
+
+Target the creature manually, check **Detected**, and teach the proper Slayer type if necessary.
 
 ### AOE switches too often
 
-RC13 uses a built-in hysteresis rule: it enters at 3 nearby hostiles and exits at 1. If a shard's combat spacing behaves unusually, this may need shard-specific tuning in a later build.
+RC14 enters at 3 nearby hostiles and exits at 1 to provide hysteresis and reduce rapid switching.
 
 ### Shield shows Missing
 
-Confirm the original shield still exists and that **Setup → Shield** points to the correct item.
+Confirm the original shield still exists and **Setup → Shield** points to the correct item.
 
 ### Bag of Sending shows `?`
 
-The bag may still work. `?` only means the script could not confidently parse the remaining charge count from the item's properties.
+The bag may still work. `?` only means the script could not confidently parse the remaining charge count.
 
 ### Apples show zero
 
 Confirm Enchanted Apples are inside your backpack and accessible to Legion.
 
-### A monster is classified incorrectly every time
-
-Use **Teach Target Slayer Type** to override automatic name-based classification for that creature.
-
 ## Feedback for the Public Test
 
-Useful reports should include:
-
-- What creature you were fighting
-- What Slayer profile the bar detected
-- What weapon it equipped
-- Whether Auto AOE or manual AOE was active
-- Which combat options were enabled
-- Whether you were testing Shield Bash / Parry Mastery
-- Any Legion console or journal error text
-
-That information makes it much easier to separate a classification problem, weapon-assignment problem, shard timing issue, or Legion API issue.
+Useful reports should include the creature being fought, detected Slayer profile, equipped weapon, Auto/Manual AOE state, enabled combat options, whether Shield Bash was enabled, and the complete Legion error text or screenshot.
