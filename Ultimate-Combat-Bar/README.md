@@ -1,29 +1,43 @@
 # J.C.S. Ultimate Combat Bar
 
-**Version 1.6 RC14 — Public Test**  
+**Version 1.6 RC15 — Release Candidate**  
 For **TazUO Legion / LegionPy**
 
-The J.C.S. Ultimate Combat Bar combines combat ability automation, Slayer weapon selection, automatic AOE switching, shield enforcement, target learning, durability monitoring, Enchanted Apple access, and Bag of Sending support into one compact combat gump.
+The J.C.S. Ultimate Combat Bar combines combat automation, Slayer weapon selection, automatic AOE switching, shield enforcement, target learning, durability monitoring, Enchanted Apple access, and Bag of Sending support in one standalone Legion script.
 
 > This is a **TazUO Legion Python script**. It is not a Razor Enhanced script.
 
-## RC14 Compatibility Fix
+## Current File
 
-RC13 used a nested `API.Gumps.*` namespace that is not available on current public Legion builds. RC14 permanently converts the custom-gump calls to Legion's current top-level `API.*` functions.
+Use only:
 
-**RC14 is completely standalone. Only one Python file is required.**
+`JCS_Ultimate_Combat_Bar_v1.6_RC15.py`
 
-Use:
+RC15 is standalone. No companion Python file is required.
 
-`JCS_Ultimate_Combat_Bar_v1.6_RC14_Public_Test.py`
+## RC15 — Buff Detection / Consecrate Fix
 
-Do not keep or run the superseded RC13 script.
+RC15 replaces the old fixed-duration guesses for maintained combat buffs with live Legion buff-state tracking.
 
-## Public Test Notice
+- Registers Legion `OnBuffAdded` / `OnBuffRemoved` callbacks.
+- Maintains a local active-buff registry for immediate state changes.
+- Uses `ActiveBuffs()` as a synchronization fallback if an event is missed.
+- Uses `BuffExists()` as a final compatibility fallback.
+- Consecrate Weapon no longer waits on the old 11.25-second guessed duration.
+- Divine Fury, Curse Weapon, and Counter Attack also use active buff state instead of long guessed refresh timers.
+- A short 1.25-second cast-attempt throttle remains to prevent repeated failed casts from spamming the client/server.
 
-This is still an RC/public-test build. The normal combat, Slayer, weapon-switching, and AOE portions are the primary tested features.
+The practical result is that Consecrate Weapon can be recast shortly after the actual buff disappears instead of waiting for an arbitrary timer.
 
-**Shield Bash / Basher support remains BETA.** It is intended for characters using Parry Mastery and still needs wider in-game testing on different builds and shard conditions.
+## RC14 Compatibility Work Retained
+
+RC14 removed legacy `API.Gumps.*` calls and converted the bar to the current top-level Legion custom-gump API. RC15 retains that compatibility work.
+
+## Public Test / RC Status
+
+The main combat, Slayer, weapon-switching, AOE, Consecrate/buff tracking, durability, apple, and Bag of Sending portions are the primary features under active use.
+
+**Shield Bash / Basher support remains BETA.** It is intended for characters using Parry Mastery and still needs broader in-game testing.
 
 ## Main Features
 
@@ -38,6 +52,7 @@ This is still an RC/public-test build. The normal combat, Slayer, weapon-switchi
 - Doom-oriented target learning for creatures with unusual or changing names
 - Shield enforcement
 - Configurable combat abilities
+- Live buff-state tracking for maintained combat buffs
 - Equipment durability warnings
 - Enchanted Apple counter and quick-use
 - Bag of Sending charge display and gold sending
@@ -57,21 +72,21 @@ The current build recognizes:
 - Composite Bow
 - Soul Glaive
 
-You do not manually choose a weapon during combat. Assign the physical weapons to profiles in **Setup**, and the bar handles switching.
+Assign physical weapons to profiles in **Setup**. During combat, the bar chooses the appropriate assigned weapon automatically.
 
 ## First-Time Setup
 
-1. Put `JCS_Ultimate_Combat_Bar_v1.6_RC14_Public_Test.py` in your Legion scripts folder.
-2. Run that single script.
+1. Put `JCS_Ultimate_Combat_Bar_v1.6_RC15.py` in your Legion scripts folder.
+2. Run the script.
 3. Click **Setup**.
 4. Click **Weapon Bag** and target the container holding your combat weapons.
 5. Click **Shield** and target the shield you want maintained.
 6. Assign weapons under **Weapon Assignments**.
-7. Enable or disable the abilities you want under **Combat Options**.
-8. Optionally configure your Bag of Sending and durability warning threshold.
+7. Enable or disable the combat abilities you want.
+8. Optionally configure a Bag of Sending and durability warning threshold.
 9. Close Setup and begin combat.
 
-Settings and assignments are stored through Legion per-character persistent variables, so normal setup should only be required once per character.
+Settings and weapon assignments are stored with Legion per-character persistent variables.
 
 ## Weapon Assignments
 
@@ -89,11 +104,11 @@ Each profile can have one weapon assigned:
 - **Reptile**
 - **Undead**
 
-Click a profile in Setup and target the desired weapon. A marked profile indicates a saved assignment.
+A marked profile in Setup indicates that an assignment is saved.
 
 ## Automatic Slayer Selection
 
-With **Slayer Auto** enabled, the bar examines the current enemy and determines the best available profile.
+With **Slayer Auto** enabled, the bar classifies the current target and selects the best available weapon profile.
 
 Classification can come from:
 
@@ -103,11 +118,11 @@ Classification can come from:
 4. Monster-name keyword matching
 5. General Single Target fallback
 
-The selected category appears under **Detected** and the weapon profile currently equipped appears under **Weapon**.
+The main bar displays both the detected Slayer category and the weapon profile currently in use.
 
 ### Poison Elementals
 
-Poison Elemental has its own profile and is checked separately from the broader Elemental category so a dedicated Poison Elemental Slayer can be used when assigned.
+Poison Elemental has a dedicated category and is checked separately from the broader Elemental profile so a dedicated Poison Elemental Slayer can be assigned.
 
 ## Teaching Unknown Monsters
 
@@ -115,26 +130,22 @@ Some creatures, especially Doom bosses or shard-specific monsters, may not class
 
 1. Open **Setup**.
 2. Click **Target Mob** and target the creature.
-3. Under **Teach Target Slayer Type**, click the correct category.
-4. The bar remembers the monster name and body/graphic when available.
+3. Under **Teach Target Slayer Type**, choose the correct category.
+4. The bar stores the monster name and body/graphic when available.
 
-Use **Forget Learned Target** to erase the learned classification for the current target.
-
-This is especially useful for creatures with random names but consistent body IDs.
+Use **Forget Learned Target** to clear the learned classification for the current target.
 
 ## Automatic AOE
 
 With **Auto AOE** enabled, the bar checks hostile creatures within **2 tiles**.
 
-RC14 behavior:
+- Enters automatic AOE at **3 or more** nearby hostiles.
+- Leaves automatic AOE when the count falls to **1 or fewer**.
+- Uses the matching Slayer weapon when that assigned Slayer weapon is an AOE-capable Bladed Whip.
+- Otherwise switches to the **General AOE** weapon.
+- Returns to the correct Slayer or Single Target weapon when the crowd clears.
 
-- Enters automatic AOE at **3 or more** nearby hostiles
-- Leaves automatic AOE when the count falls to **1 or fewer**
-- Uses the matching Slayer weapon if that assigned weapon is an AOE-capable Bladed Whip
-- Otherwise switches to the **General AOE** weapon
-- Returns to the appropriate Slayer or Single Target profile afterward
-
-The separate enter/exit thresholds reduce rapid weapon swapping when the nearby count fluctuates.
+The separate enter/exit thresholds reduce rapid weapon swapping as enemy counts fluctuate.
 
 ### Manual AOE
 
@@ -144,13 +155,13 @@ Click **AOE** on the main bar to force General AOE mode. Manual AOE overrides no
 
 Use **Setup → Shield** to target the shield you want maintained.
 
-The main bar shows:
+The bar displays:
 
 - **Equipped** — configured shield is equipped
 - **Missing** — configured shield is not equipped
 - **Not Set** — no shield is configured
 
-The bar periodically checks and attempts to restore the configured shield.
+The script periodically checks and attempts to restore the configured shield.
 
 ## Combat Options
 
@@ -167,11 +178,13 @@ Each ability can be toggled independently:
 - **Curse Weapon**
 - **Shield Bash BETA**
 
-The script manages its own reuse timing rather than blindly firing every enabled action continuously.
+### Maintained Buffs
+
+RC15 checks live buff state before recasting maintained abilities. This is especially important for **Consecrate Weapon**: while the buff is present, the bar does not recast it; after Legion reports the buff gone, it becomes eligible again subject only to the short anti-spam throttle and normal mana/casting restrictions.
 
 ### Enemy of One
 
-Enemy of One is tracked by creature type rather than only one monster serial. This reduces unnecessary cancel/recast behavior while fighting several creatures of the same type.
+Enemy of One is tracked by creature type rather than only by one monster serial. This reduces unnecessary cancel/recast behavior while fighting multiple creatures of the same type.
 
 ### Shield Bash / Basher
 
@@ -179,7 +192,7 @@ Enemy of One is tracked by creature type rather than only one monster serial. Th
 
 ## Target Button
 
-**Target** manually selects the current enemy. It is useful for teaching monsters, testing Slayer assignments, bosses, and unusual shard-specific creatures.
+**Target** manually selects the current enemy. It is useful for teaching monsters, bosses, testing Slayer assignments, and unusual shard-specific creatures.
 
 ## Durability Monitoring
 
@@ -189,7 +202,7 @@ In Setup:
 
 - **Warn -** lowers the threshold by 5%
 - The percentage button displays the current threshold
-- **Warn +** raises it by 5%
+- **Warn +** raises the threshold by 5%
 - **Check Now** performs an immediate durability scan
 
 The main gump displays **OK** or **LOW x#**.
@@ -200,7 +213,7 @@ The bar automatically searches your backpack for Enchanted Apples.
 
 - The main bar shows **Apple [count]**
 - Clicking it uses an apple
-- The minimized bar can display the apple graphic plus the current count
+- The minimized bar shows apple access and count when available
 
 No manual apple serial setup is required.
 
@@ -208,11 +221,11 @@ No manual apple serial setup is required.
 
 Use **Setup → Set Send Bag** and target your Bag of Sending.
 
-The script attempts to read remaining charges from the bag's displayed item properties.
+The script attempts to read remaining charges from item properties.
 
 - **Bank Gold** sends eligible backpack gold through the configured Bag of Sending
-- The remaining charge count is displayed when readable
-- `?` means the bag is configured but the property text could not be reliably parsed
+- Remaining charges are displayed when readable
+- `?` means the bag is configured but the charge property could not be parsed reliably
 
 ## Main Bar Buttons
 
@@ -229,28 +242,28 @@ The script attempts to read remaining charges from the bag's displayed item prop
 
 The full bar shows:
 
-- **Target** — current enemy name
-- **Detected** — target Slayer/profile classification
+- Current target
+- Detected Slayer/profile classification
 - Classification source
-- **Weapon** — currently active weapon profile
-- **Mode** — Manual AOE, Auto AOE, or Auto Slayer
-- **Near** — hostile count in the AOE radius
-- **Shield** — configured shield state
-- **Body** — current enemy body/graphic ID
-- **Dura** — durability state and warning threshold
-- **ACTIVE / PAUSED** — script state
+- Active weapon profile
+- Manual AOE / Auto AOE / Auto Slayer mode
+- Nearby hostile count
+- Shield status
+- Current enemy body/graphic ID
+- Durability state and warning threshold
+- ACTIVE / PAUSED state
 
 ## Minimized Bar
 
-Compact mode includes the script title, running/paused state, current mode/profile, durability check, Enchanted Apple information, Bag of Sending information, **Open**, and **Stop**.
+Compact mode includes script state, current combat mode/profile, durability access, Enchanted Apple information, Bag of Sending information, **Open**, and **Stop**.
 
-The full and minimized positions are remembered independently.
+Full and minimized positions are remembered independently.
 
 ## Pause vs. Stop
 
-**Pause** temporarily suspends combat processing while keeping the script open.
+**Pause** temporarily suspends combat processing while keeping the bar open.
 
-**Stop** ends the script and clears active weapon abilities. Run RC14 again to reopen it.
+**Stop** ends the script and clears active weapon abilities. Run RC15 again to reopen it.
 
 ## Persistent Settings
 
@@ -274,13 +287,18 @@ Per-character persistent data includes:
 - Shard-specific spells, masteries, item properties, and journal behavior can differ.
 - Bag of Sending charge detection depends on the wording exposed in item properties.
 - Custom monsters may require manual teaching.
-- The script can only equip and use items/actions that the client and shard permit at that moment.
+- The script can only equip or use items/actions that the client and shard permit at that moment.
+- RC15 depends on current Legion buff APIs for the improved maintained-buff behavior, but retains `ActiveBuffs()` / `BuffExists()` fallback handling.
 
 ## Troubleshooting
 
+### Consecrate Weapon is not recasting
+
+Confirm **Consecrate** is enabled in Setup and that the character has enough mana. RC15 waits while Legion reports the buff active, then allows a new cast after the buff is actually removed.
+
 ### `AttributeError: 'API' object has no attribute 'Gumps'`
 
-That was the RC13 compatibility problem. Delete RC13 and use the standalone RC14 file. RC14 uses the current top-level Legion gump API.
+That was the older RC13 compatibility issue. RC15 uses the current top-level Legion gump API.
 
 ### Wrong Slayer weapon
 
@@ -288,20 +306,20 @@ Target the creature manually, check **Detected**, and teach the proper Slayer ty
 
 ### AOE switches too often
 
-RC14 enters at 3 nearby hostiles and exits at 1 to provide hysteresis and reduce rapid switching.
+Automatic AOE enters at 3 nearby hostiles and exits at 1 to provide hysteresis and reduce rapid switching.
 
 ### Shield shows Missing
 
-Confirm the original shield still exists and **Setup → Shield** points to the correct item.
+Confirm the saved shield still exists and **Setup → Shield** points to the correct item.
 
 ### Bag of Sending shows `?`
 
-The bag may still work. `?` only means the script could not confidently parse the remaining charge count.
+The bag may still work. `?` only means the remaining charge count could not be parsed confidently.
 
 ### Apples show zero
 
 Confirm Enchanted Apples are inside your backpack and accessible to Legion.
 
-## Feedback for the Public Test
+## Feedback
 
 Useful reports should include the creature being fought, detected Slayer profile, equipped weapon, Auto/Manual AOE state, enabled combat options, whether Shield Bash was enabled, and the complete Legion error text or screenshot.
