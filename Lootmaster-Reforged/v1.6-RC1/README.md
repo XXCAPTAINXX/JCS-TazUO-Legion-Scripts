@@ -4,11 +4,15 @@ Release-candidate testing folder for the upcoming v1.6 release.
 
 ## Script
 
-Upload the current release candidate here as:
-
 `JCS_Lootmaster_Reforged_v1.6_RC1.py`
 
 This folder is intentionally separate from the current v1.5 public release so RC testing does not disturb the stable version.
+
+## Tutorial Video
+
+First-time setup and feature walkthrough for Lootmaster Reforged v1.6 RC1:
+
+https://youtu.be/rJEf5hQp9xo
 
 ## Major v1.6 additions
 
