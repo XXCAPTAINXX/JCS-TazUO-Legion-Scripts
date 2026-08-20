@@ -6,6 +6,15 @@ This repository is intentionally separate from my private development/workbench 
 
 ## Available Projects
 
+### J.C.S. SuitMaster
+A Legion-native complete-suit equipment optimizer. Scan stored gear, choose or create a build profile, and SuitMaster searches the available equipment for up to three ranked complete suit options.
+
+Current public build: **RC1**
+
+Video demo: https://youtu.be/XYPHopI-9fw
+
+See the [`SuitMaster`](./SuitMaster/) folder for setup, features, profile behavior, and RC1 testing information.
+
 ### Lootmaster Reforged
 A Legion-native automated looting system inspired by and built in homage to the original **Lootmaster**.
 
