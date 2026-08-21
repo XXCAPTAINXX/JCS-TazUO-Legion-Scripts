@@ -6,7 +6,20 @@ This repository is intentionally separate from my private development/workbench 
 
 ## Available Projects
 
+### J.C.S. Artisan Workshop
+
+A complete crafting and imbuing manager for weapons and armor. Build reusable templates, copy supported properties from existing items, preview resource requirements, produce batches, maintain crafting tools, and manage materials through secure containers.
+
+Current public build: **Beta 1**
+
+- [Download Artisan Workshop Beta 1](./Artisan-Workshop/JCS_ArtisanWorkshop_Beta1.py)
+- [Setup, features, and beta limitations](./Artisan-Workshop/)
+- [Video demonstration](https://youtu.be/e3GWvO4ER0w)
+
+Beta 1 keeps destructive salvage disabled. Reforging and elemental conversion are planned for later releases.
+
 ### J.C.S. SuitMaster
+
 A Legion-native complete-suit equipment optimizer. Scan stored gear, choose or create a build profile, and SuitMaster searches the available equipment for up to three ranked complete suit options.
 
 Current public build: **RC1**
@@ -16,6 +29,7 @@ Video demo: https://youtu.be/XYPHopI-9fw
 See the [`SuitMaster`](./SuitMaster/) folder for setup, features, profile behavior, and RC1 testing information.
 
 ### Lootmaster Reforged
+
 A Legion-native automated looting system inspired by and built in homage to the original **Lootmaster**.
 
 Current public build: **v1.5-RC1**
