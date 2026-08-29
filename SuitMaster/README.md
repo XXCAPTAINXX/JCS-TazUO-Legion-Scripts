@@ -1,6 +1,6 @@
 # J.C.S. SuitMaster
 
-**Current public build: RC1 (2.2l-RC1)**
+**Current public build: RC5**
 
 J.C.S. SuitMaster is a TazUO Legion equipment optimizer designed for Ultima Online and developed/tested around InsaneUO.
 
@@ -12,32 +12,32 @@ https://youtu.be/XYPHopI-9fw
 
 ## Important: Download the Whole SuitMaster Folder
 
-The RC1 source is packaged as a small loader plus a three-part payload because of repository upload-size limitations in the publishing tool used for this release.
+RC5 uses the preserved RC4 source as its verified base. The RC5 loader reconstructs the merged RC5 source in memory and checks its SHA-256 before running it.
 
-Keep these together exactly as they appear in the repository:
+Keep the repository folder structure intact, especially:
 
-- `JCS_SuitMaster_RC1.py`
-- `RC1_payload/part00.txt`
-- `RC1_payload/part01.txt`
-- `RC1_payload/part02.txt`
+- `RC4/JCS_SuitMaster_RC4.py`
+- `RC5/JCS_SuitMaster_RC5.py`
 
-**Do not download only the `.py` file.** Clone/download the complete `SuitMaster` folder. The loader reconstructs and runs the full 2.2l-RC1 source locally when launched in TazUO Legion.
+**Do not download only the RC5 `.py` file.** Download/clone the complete `SuitMaster` folder so the RC4 base remains available to RC5.
 
-Full reconstructed-source SHA-256:
+Reconstructed RC5 SHA-256:
 
-`e0be602df65f1fb5569a49f83a0a3168bddba86ccaf05a6d22989bab0f0d9154`
+`83414487314d03f42879894a984053a5950a00d1092095e681ab43bab70691ac`
 
-## RC1 Features
+## RC5 Features
 
 - Scan multiple equipment storage chests
 - Built-in profiles for melee, caster, luck, tamer, and hybrid builds
 - Custom profile editor
+- **Keep Suit Medable** toggle
 - **Scan My Build** to create a starting profile from your current character
 - Flexible equipment **+skill point budgeting** rather than forcing one exact skill distribution
 - **Inspect Player** to import another player's visible equipment/build philosophy
 - Compact on-the-go Inspect bar
 - Up to **3 ranked suit options**
 - Whole-suit minimums, targets, and 0-5 stat priorities
+- Shield support, including required-shield profiles such as Basher
 - Lock specific equipment pieces into a build
 - Pull a selected suit into your bag
 - Return pulled equipment afterward
@@ -45,6 +45,20 @@ Full reconstructed-source SHA-256:
 - LootMaster Wanted-file integration to help identify missing stats/items
 - Saved gump positions
 - Build-search safety limits to prevent runaway searches
+
+## Keep Suit Medable
+
+The Profile Editor includes a toggleable **Keep Suit Medable** constraint.
+
+When enabled, incompatible armor is removed from consideration **before optimization/scoring**:
+
+- Normal leather armor is allowed.
+- Armor carrying **Mage Armor** is allowed regardless of base material.
+- Bone armor requires Mage Armor.
+- Studded, plate, chain, ring, stone, woodland, dragon, and other non-medable body armor are excluded unless Mage Armor makes the piece compatible.
+- Cloth-style headwear remains eligible.
+
+The setting is saved with the profile and included in profile share/import codes. If SuitMaster cannot build a complete meditation-compatible suit, it reports the missing valid slots instead of substituting incompatible armor.
 
 ## Profile Priorities
 
@@ -72,19 +86,21 @@ This does **not** reveal another player's hidden/base skill table. Imported prof
 1. Set one or more equipment storage chests.
 2. Scan the equipment.
 3. Select a built-in profile or create/edit a custom profile.
-4. Press **BUILD SUIT**.
-5. SuitMaster returns up to the best **3 unique complete suits** it can construct from the scanned equipment.
+4. Enable **Keep Suit Medable** if the build needs Meditation-compatible armor.
+5. Press **BUILD SUIT**.
+6. SuitMaster returns up to the best **3 unique complete suits** it can construct from the scanned equipment.
 
 Three results are a maximum, not a requirement. If only one or two valid unique suits can be constructed, SuitMaster will return those instead.
 
-## RC1 Status
+## RC5 Status
 
 This is a **Release Candidate / public test build**. Large equipment collections, unusual shard-specific item properties, and complex custom profiles may expose edge cases.
 
 When reporting a problem, please include:
 
-- SuitMaster RC1
+- SuitMaster RC5
 - the profile/build being used
+- whether **Keep Suit Medable** was enabled
 - what happened after pressing BUILD SUIT
 - exact error text, if any
 - screenshots when useful
