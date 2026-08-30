@@ -1,0 +1,41 @@
+name: Publish SuitMaster RC9
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.rc9_publish/**'
+      - '.github/workflows/publish-suitmaster-rc9.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Rebuild full standalone RC9
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import base64, zlib
+          chunks = [Path(f'.rc9_publish/part{i}.txt').read_text().strip() for i in range(4)]
+          raw = zlib.decompress(base64.b64decode(''.join(chunks)))
+          out = Path('SuitMaster/RC9/JCS_SuitMaster_RC9.py')
+          out.parent.mkdir(parents=True, exist_ok=True)
+          out.write_bytes(raw)
+          print(f'Wrote {len(raw)} bytes to {out}')
+          PY
+      - name: Commit full RC9
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add SuitMaster/RC9/JCS_SuitMaster_RC9.py
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git commit -m "Publish full standalone SuitMaster RC9"
+          git push
