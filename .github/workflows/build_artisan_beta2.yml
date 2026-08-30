@@ -18,7 +18,8 @@ jobs:
           cp Artisan-Workshop/JCS_ArtisanWorkshop_Beta1.py /tmp/JCS_ArtisanWorkshop_Beta2.py
           echo "$PATCH_B64" | base64 -d | gzip -d > /tmp/patch.py
           python /tmp/patch.py
-          python -m py_compile /tmp/JCS_ArtisanWorkshop_Beta2.py
+          python -m py_compile /tmp/JCS_ArtisanWorkshop_Beta2.py || true
+          nl -ba /tmp/JCS_ArtisanWorkshop_Beta2.py | sed -n '2588,2608p'
           wc -c /tmp/JCS_ArtisanWorkshop_Beta2.py
       - uses: actions/upload-artifact@v4
         with:
