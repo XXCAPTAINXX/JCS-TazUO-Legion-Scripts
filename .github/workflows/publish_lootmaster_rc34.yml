@@ -1,0 +1,25 @@
+name: Publish LootMaster RC34
+on:
+  push:
+    paths:
+      - '.github/workflows/publish_lootmaster_rc34.yml'
+permissions:
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Assemble full standalone release
+        run: |
+          mkdir -p Lootmaster-Reforged/v1.6-RC34
+          cat .publish_tmp/loot_rc34_*.b64 | base64 -d | gzip -d > Lootmaster-Reforged/v1.6-RC34/JCS_LootMaster_RC34_CS1.py
+          test "$(wc -c < Lootmaster-Reforged/v1.6-RC34/JCS_LootMaster_RC34_CS1.py | tr -d ' ')" = "190524"
+      - name: Commit release
+        run: |
+          rm -rf .publish_tmp
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Publish LootMaster RC34 CS1"
+          git push
