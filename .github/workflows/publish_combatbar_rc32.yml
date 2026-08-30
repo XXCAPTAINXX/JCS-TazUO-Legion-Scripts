@@ -1,5 +1,6 @@
 name: Publish Combat Bar RC32
 
+# retrigger after all RC32 reconstruction chunks were committed
 on:
   push:
     paths:
