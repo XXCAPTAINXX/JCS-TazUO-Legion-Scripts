@@ -1,6 +1,6 @@
 name: Publish Combat Bar RC32
 
-# diagnostic rebuild before final publish
+# final exact-match publish
 on:
   push:
     paths:
@@ -16,10 +16,11 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Diagnose reconstructed Combat Bar RC32
+      - name: Reconstruct and publish exact Combat Bar RC32
         shell: bash
         run: |
           set -euo pipefail
+          OUT='Ultimate-Combat-Bar/v1.6-RC32/JCS_CombatBar_RC32_CS1.py'
           mkdir -p Ultimate-Combat-Bar/v1.6-RC32
           cat \
             .publish_tmp/combat_rc32_c00a.b64 \
@@ -42,7 +43,21 @@ jobs:
             .publish_tmp/combat_rc32_12.b64 \
             .publish_tmp/combat_rc32_13.b64 \
             .publish_tmp/combat_rc32_14.b64 \
-            | base64 -d > Ultimate-Combat-Bar/v1.6-RC32/JCS_CombatBar_RC32_CS1.py
-          echo "SIZE=$(wc -c < Ultimate-Combat-Bar/v1.6-RC32/JCS_CombatBar_RC32_CS1.py)"
-          echo "SHA256=$(sha256sum Ultimate-Combat-Bar/v1.6-RC32/JCS_CombatBar_RC32_CS1.py | cut -d' ' -f1)"
-          python -m py_compile Ultimate-Combat-Bar/v1.6-RC32/JCS_CombatBar_RC32_CS1.py
+            | base64 -d > "$OUT"
+          python - <<'PY'
+          p='Ultimate-Combat-Bar/v1.6-RC32/JCS_CombatBar_RC32_CS1.py'
+          d=open(p,'rb').read()
+          if d.startswith(b'\xef\xbb\xbf'):
+              open(p,'wb').write(d[3:])
+          PY
+          test "$(wc -c < "$OUT")" -eq 101304
+          test "$(sha256sum "$OUT" | cut -d' ' -f1)" = '354d01c7bf5a7882875ca2daa8e63a3001b498d49c186310f4581eec3e6be6ab'
+          python -m py_compile "$OUT"
+          rm -rf Ultimate-Combat-Bar/v1.6-RC32/__pycache__
+          rm -f .publish_tmp/combat_rc32_*.b64
+          rm -f .github/workflows/publish_combatbar_rc32.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Publish Combat Bar v1.6-RC32 CS1"
+          git push
