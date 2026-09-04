@@ -18,6 +18,15 @@ Current public build: **Beta 1**
 
 Beta 1 keeps destructive salvage disabled. Reforging and elemental conversion are planned for later releases.
 
+### J.C.S. Skill Master
+
+A Legion-native skill trainer and character-build manager with per-skill goals, saved/shareable builds, skill/stat auto-locking, Power Scroll and stat-cap guidance, bard training, casting trainers, and a BUILD-page GO mode that attempts to train all supported skills to their saved targets.
+
+Current public build: **Beta 17**
+
+- [Download Skill Master Beta 17](./Skill-Master/JCS_SkillMaster_Beta17.py)
+- [Setup, features, and beta notes](./Skill-Master/)
+
 ### J.C.S. SuitMaster
 
 A Legion-native complete-suit equipment optimizer. Scan stored gear, choose or create a build profile, and SuitMaster searches the available equipment for up to three ranked complete suit options.
