@@ -1,6 +1,6 @@
 """
 J.C.S. Free Skills Master - InsaneUO / TazUO LegionPy
-Beta 1
+Beta 7
 
 Trains InsaneUO "free skills" without touching the normal 720 skill-cap budget.
 
