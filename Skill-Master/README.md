@@ -1,8 +1,10 @@
 # J.C.S. Skill Master
 
-**Current public build: Beta 17**
+**Current public build: Beta 24**
 
 J.C.S. Skill Master is a TazUO Legion skill-training and character-build manager for InsaneUO.
+
+Video demonstration: https://youtu.be/zIMZQDb5Nsk
 
 ## Highlights
 
@@ -33,8 +35,8 @@ Some build skills can currently be tracked but still require manual training. Th
 
 ## Download
 
-- [JCS_SkillMaster_Beta17.py](./JCS_SkillMaster_Beta17.py)
+- [JCS_SkillMaster_Beta24.py](./JCS_SkillMaster_Beta24.py)
 
 ## Beta Notice
 
-This is still a public beta. The parts tested so far are working well, but Skill Master now covers a large number of skills and combinations. Please report the exact skill, setup, error text, and what the character was doing when a problem occurs.
+This is still a public beta. The parts tested so far are working well, but Skill Master covers many skills and combinations. Please report the exact skill, setup, error text, and what the character was doing when a problem occurs.
